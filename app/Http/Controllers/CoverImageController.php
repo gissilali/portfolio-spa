@@ -7,11 +7,9 @@ use Illuminate\Http\Request;
 
 class CoverImageController extends Controller
 {
-    function uploadImage(Request $request) {
-        $data = $request->input('image');
-        list($type, $data) = explode(';', $data);
-        list(, $data)      = explode(',', $data);
-        $data = base64_decode($data);
+    function uploadImage($image_data) {
+        $data = $image_data;
+        $data = $this->prepareImage($data);
         $image_name = time().'.png';
         $path = public_path('cover_pics/');
         if(!file_exists($path)){
@@ -23,5 +21,11 @@ class CoverImageController extends Controller
     }
     function  storeImageURL(){
 
+    }
+    function prepareImage($data) {
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        return $data;
     }
 }

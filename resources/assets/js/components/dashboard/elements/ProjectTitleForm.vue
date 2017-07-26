@@ -1,28 +1,36 @@
 <template>
-	<div>
+	<div class="ui form">
         <div class="cover-image" id="cover-image">
 
         </div>
-        <div class="field centered" style="text-align: center">
+        <div class="centered" style="text-align: center">
             <label for="cover_image" class="ui button greenish">
-                <i class="camera icon"></i>
-                Choose Image</label>
+                <i class="camera icon"></i> Choose Image
+            </label>
             <strong>
                 <small>{{ file.name }}</small>
             </strong>
             <input type="file" name="cover_image" id="cover_image" style="visibility:hidden" @change="setupFileUploader">
         </div>
         <div class="extra content">
-            <div class="ui fluid action input">
-                <input type="text" placeholder="Project Title..." v-model="title">
-                <button class="ui button blue" @click="setProjectTitle" :disabled="titleNotSet">Save</button>
+            <div class="ui field">
+                <div class="ui fluid input">
+                    <input type="text" placeholder="Project Title..." v-model="title">
+                </div>
+            </div>
+            <div class="ui field">
+                <button class="ui fluid button blue" :disabled="titleSubmittable" @click="setProjectTitle">Save</button>
             </div>
         </div>
     </div>
 </template>
 <script>
+    /**
+     * What can be done extract the toast message functionality to other file
+     */
 	import Croppie from 'croppie';
 	import axios from 'axios';
+	import iziToast from 'izitoast';
 	export default {
 			mounted() {
 			    this.image = this.imgURL;
@@ -40,11 +48,12 @@
                     croppie: '',
                     image: null,
                     file: '',
-                    title: ''
+                    title: '',
+                    toast: ''
                 }
             },
             computed: {
-              titleNotSet() {
+              titleSubmittable() {
                 if(this.imageURL == null && this.title.trim().length < 2){
                     return true;
                 } else{
@@ -90,30 +99,54 @@
                     reader.readAsDataURL(file);
                 },
 
-                uploadImage() {
+                getCroppedImage() {
                     var context = this;
                     this.croppie.result({
                        type: 'canvas', size: 'viewport',
-
                     })
                     .then(response => {
-                        console.log(response);
-                        this.image = response;
-                        axios.post('/cover-image/upload', {
-                            image : context.image,
-                        }).then(function(response){
-                            console.log(response);
-                        });
+                        context.image = response
                     });
                 },
 
                 setProjectTitle() {
+                    this.getCroppedImage();
                     var context = this;
                     axios.post('/set-project-title', {
-                        title: context.title
+                        title: context.title,
+                        image: context.image
                     }).then(response => {
+                        context.showSuccess();
+                        context.clearForm();
+                    })
+                        .catch(error => {
+                            console.log(error);
+                            context.showError();
                         });
 
+                },
+
+                clearForm() {
+                    this.image = this.imgURL;
+                    this.title = ''
+                },
+
+                showSuccess(){
+                    iziToast.success({
+                        timeout: '5000',
+                        title: 'Hey',
+                        message: 'Project has been created',
+                        position: 'topRight'
+                    });
+                },
+
+                showError() {
+                    iziToast.error({
+                        timeout: '5000',
+                        title: 'Error !',
+                        message: 'No image selected',
+                        position: 'topRight'
+                    });
                 }
             }
 	}

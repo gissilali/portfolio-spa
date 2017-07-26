@@ -3,5 +3,8 @@
   "/css/app.css": "/css/app.css",
   "/js/dashboard/app.js": "/js/dashboard/app.js",
   "/js/main.js": "/js/main.js",
-  "/js/dashboard/main.js": "/js/dashboard/main.js"
+  "/js/dashboard/main.js": "/js/dashboard/main.js",
+  "/js/dashboard/ui-interactions.js": "/js/dashboard/ui-interactions.js",
+  "/js/dashboard/ui-interacations.js": "/js/dashboard/ui-interacations.js",
+  "/css/iziToast.css": "/css/iziToast.css"
 }

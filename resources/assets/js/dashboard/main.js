@@ -40,8 +40,9 @@ router.beforeEach((to, from, next) => {
 });
 
 Vue.component('dashboard', require('../views/Dashboard'));
-Vue.component('cover-image-uploader', require('../components/dashboard/elements/CoverImageUploader'));
+Vue.component('project-title-form', require('../components/dashboard/elements/ProjectTitleForm'));
 Vue.component('project-image-uploader', require('../components/dashboard/elements/ProjectImageUploader.vue'));
+Vue.component('project-details-form', require('../components/dashboard/elements/ProjectDetailsForm.vue'));
 const app = new Vue({
     el: '#app',
     render: h => h(App),
